@@ -1,5 +1,6 @@
 Scriptname _RenSky_AffinityScript extends activemagiceffect  
 import PapyrusUtil
+
 Faction property lovefaction auto
 bool property ispositive auto
 float property multiplier auto
@@ -58,7 +59,7 @@ Event oneffectstart(actor aktarget, actor akcaster)
 
 	speech = speech/5
 	speech = speech + 10
-	speech = ClampFloat(speech, 0.0, 30.0)
+	speech = ClampFloat( speech, 0.0, 30.0 )
 	;speech = speech * multiplier
 
 	;[Apply Personality and Interest Checks, up to 20% each (Max 70%)]
@@ -66,8 +67,8 @@ Event oneffectstart(actor aktarget, actor akcaster)
 	int PersonalityIndex = CheckFactionindex(akcaster, Personalitylist)
 	int InterestIndex = CheckFactionindex(akcaster, Interestlist)
 
-	Int Personalityresult = ClampInt(PersonalityHandler(PersonalityIndex), 0, 20)
-	Int Interestresult = ClampInt(InterestHandler(InterestIndex), 0, 20)
+	Int Personalityresult = ClampInt( PersonalityHandler(PersonalityIndex), 0, 20 )
+	Int Interestresult = ClampInt( InterestHandler(InterestIndex), 0, 20 )
 
 
 	speech = speech + Personalityresult + InterestResult
@@ -75,7 +76,7 @@ Event oneffectstart(actor aktarget, actor akcaster)
 
 	;[Uses congealed speech value to run a check, if the ispositive property is true. Otherwise, ALWAYS run negative effect]
 
-	int random = utility.randomint(0, 100)
+	int random = osanative.randomint(0, 100)
 
 	if ispositive && random< speech
 		modfactionrankboth(akcaster)
