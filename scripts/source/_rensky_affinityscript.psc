@@ -1,4 +1,5 @@
 Scriptname _RenSky_AffinityScript extends activemagiceffect  
+import PapyrusUtil
 Faction property lovefaction auto
 bool property ispositive auto
 float property multiplier auto
@@ -50,15 +51,14 @@ Event oneffectstart(actor aktarget, actor akcaster)
 
 	;[get player speech value. If greater than 100, truncate to 100]
 
-	float speech = playerref.getav("Speechcraft")
-	if speech >= 100.0
-		speech = 100.0
-	endif
+	float speech = ClampFloat(playerref.getav("Speechcraft"), 0.0, 100.0)
+	
 
 	;[Using a base value of 10%, add 20% of your speech level as bonus chance (Max 30%)]
 
 	speech = speech/5
 	speech = speech + 10
+	speech = ClampFloat(speech, 0.0, 30.0)
 	;speech = speech * multiplier
 
 	;[Apply Personality and Interest Checks, up to 20% each (Max 70%)]
@@ -66,20 +66,9 @@ Event oneffectstart(actor aktarget, actor akcaster)
 	int PersonalityIndex = CheckFactionindex(akcaster, Personalitylist)
 	int InterestIndex = CheckFactionindex(akcaster, Interestlist)
 
-	Int Personalityresult = PersonalityHandler(PersonalityIndex)
-	Int Interestresult = InterestHandler(InterestIndex)
+	Int Personalityresult = ClampInt(PersonalityHandler(PersonalityIndex), 0, 20)
+	Int Interestresult = ClampInt(InterestHandler(InterestIndex), 0, 20)
 
-	If personalityresult > 20
-		personalityresult = 20
-	endif
-
-	If interestresult > 20
-		interestresult = 20
-	endif
-
-	if speech > 30
-		speech = 30
-	endif
 
 	speech = speech + Personalityresult + InterestResult
 
@@ -87,7 +76,6 @@ Event oneffectstart(actor aktarget, actor akcaster)
 	;[Uses congealed speech value to run a check, if the ispositive property is true. Otherwise, ALWAYS run negative effect]
 
 	int random = utility.randomint(0, 100)
-	float speechint = speech as int
 
 	if ispositive && random< speech
 		modfactionrankboth(akcaster)
