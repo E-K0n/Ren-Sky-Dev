@@ -187,7 +187,7 @@ Diginified
 If PIndex == 0
 
 	If playerref.hasspell(GallantAB)
-	toreturn = toreturn + 20
+	toreturn += 20
 	Endif
 
 
@@ -203,7 +203,7 @@ Irritable
 If PIndex == 1
 
 	If playerref.hasspell(LotharioAB)
-	toreturn = toreturn + 20
+	toreturn += 20
 	Endif
 
 
@@ -218,7 +218,7 @@ Outgoing
 If PIndex == 2
 
 	If playerref.hasspell(GallantAB)
-	toreturn = toreturn + 20
+	toreturn += 20
 	Endif
 
 
@@ -233,7 +233,7 @@ Seductive
 If PIndex == 3
 
 	If playerref.hasspell(LotharioAB) || playerref.hasspell(MeekAB)
-	toreturn = toreturn + 20
+	toreturn += 20
 	Endif
 
 
@@ -248,7 +248,7 @@ Shy
 If PIndex == 4
 
 	If playerref.hasspell(LotharioAB) || playerref.hasspell(GallantAB)
-	toreturn = toreturn + 20
+	toreturn += 20
 	Endif
 
 Endif
@@ -262,7 +262,7 @@ Tomboyish
 If PIndex == 5
 
 	If playerref.hasspell(MeekAB) || playerref.hasspell(GallantAB)
-	toreturn = toreturn + 20
+	toreturn += 20
 	Endif
 
 Endif
@@ -276,7 +276,7 @@ Maternal
 If PIndex == 6
 
 	If playerref.hasspell(MeekAB)
-	toreturn = toreturn + 20
+	toreturn += 20
 	Endif
 
 Endif
@@ -352,7 +352,7 @@ If IIndex == 2
 
 if playerref.wornhaskeyword(JewelKYWD)
 
-toreturn = toreturn + 20
+toreturn += 20
 
 endif
 
@@ -390,7 +390,7 @@ Humanities
 
 If IIndex == 4
 if Bardquest.iscompleted()
-toreturn = toreturn + 20
+toreturn += 20
 
 endif
 
