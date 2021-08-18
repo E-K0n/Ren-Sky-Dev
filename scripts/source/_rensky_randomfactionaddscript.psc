@@ -33,7 +33,7 @@ endwhile
 
 if !found
 
-		index = utility.randomint(1, FL.getsize()) 
+		index = osanative.randomint(1, FL.getsize()) 
 		index = index - 1
 		caster.addtofaction(FL.getat(index) as Faction)
 		;debug.messagebox("No faction found, adding to " + index)
