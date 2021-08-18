@@ -107,7 +107,7 @@ hasbeengiven = true
 	;debug.messagebox(chance)
 	int chanceint = chance as int
 	;debug.messagebox(chanceint)
-	int random = utility.randomint(0, 100)
+	int random = osanative.randomint(0, 100)
 
 	if random < chanceint
 
