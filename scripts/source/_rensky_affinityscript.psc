@@ -7,6 +7,7 @@ miscobject property gold auto
 miscobject property garlic auto
 Formlist property PersonalityList auto
 Formlist property InterestList auto
+actor playerref
 
 Keyword property JewelKYWD auto
 quest property bardquest auto
@@ -38,59 +39,61 @@ Spell Property DepravedAB auto
 
 
 Event oneffectstart(actor aktarget, actor akcaster)
+	; Cache, each call to game.getplayer takes an entire frame
+	playerref = game.GetPlayer()
 
 	;[If the target isn't in the love faction, add it to love faction]
 
-if !akcaster.isinfaction(lovefaction)
-akcaster.addtofaction(lovefaction)
-endif
+	if !akcaster.isinfaction(lovefaction)
+		akcaster.addtofaction(lovefaction)
+	endif
 
 	;[get player speech value. If greater than 100, truncate to 100]
 
-float speech = game.getplayer().getav("Speechcraft")
-if speech >= 100.0
-speech = 100.0
-endif
+	float speech = playerref.getav("Speechcraft")
+	if speech >= 100.0
+		speech = 100.0
+	endif
 
 	;[Using a base value of 10%, add 20% of your speech level as bonus chance (Max 30%)]
 
-speech = speech/5
-speech = speech + 10
-;speech = speech * multiplier
+	speech = speech/5
+	speech = speech + 10
+	;speech = speech * multiplier
 
 	;[Apply Personality and Interest Checks, up to 20% each (Max 70%)]
 
-int PersonalityIndex = CheckFactionindex(akcaster, Personalitylist)
-int InterestIndex = CheckFactionindex(akcaster, Interestlist)
+	int PersonalityIndex = CheckFactionindex(akcaster, Personalitylist)
+	int InterestIndex = CheckFactionindex(akcaster, Interestlist)
 
-Int Personalityresult = PersonalityHandler(PersonalityIndex)
-Int Interestresult = InterestHandler(InterestIndex)
+	Int Personalityresult = PersonalityHandler(PersonalityIndex)
+	Int Interestresult = InterestHandler(InterestIndex)
 
-If personalityresult > 20
-personalityresult = 20
-endif
+	If personalityresult > 20
+		personalityresult = 20
+	endif
 
-If interestresult > 20
-interestresult = 20
-endif
+	If interestresult > 20
+		interestresult = 20
+	endif
 
-if speech > 30
-speech = 30
-endif
+	if speech > 30
+		speech = 30
+	endif
 
-speech = speech + Personalityresult + InterestResult
+	speech = speech + Personalityresult + InterestResult
 
 
 	;[Uses congealed speech value to run a check, if the ispositive property is true. Otherwise, ALWAYS run negative effect]
 
-int random = utility.randomint(0, 100)
-float speechint = speech as int
+	int random = utility.randomint(0, 100)
+	float speechint = speech as int
 
-if ispositive && random< speech
-modfactionrankboth(akcaster)
-elseif !ispositive
-modfactionrankboth(akcaster)
-endif
+	if ispositive && random< speech
+		modfactionrankboth(akcaster)
+	elseif !ispositive
+		modfactionrankboth(akcaster)
+	endif
 
 
 endevent
@@ -106,32 +109,30 @@ endevent
 
 Function modfactionrankboth(actor thisactor)
 
-if thisactor.getfactionrank(lovefaction) < 0
-	thisactor.setfactionrank(lovefaction, 0)
-endif
-
-if ispositive
-
-	if thisactor.getfactionrank(lovefaction) < 9
-
-		float skillinc = game.getplayer().getav("Speechcraft")
-		skillinc = skillinc * 10
-		Game.AdvanceSkill("Speechcraft", skillinc)
-		thisactor.modfactionrank(lovefaction, 1)
-
-		debug.notification("Your affinity has increased!")
-
-
+	if thisactor.getfactionrank(lovefaction) < 0
+		thisactor.setfactionrank(lovefaction, 0)
 	endif
 
-elseif thisactor.getfactionrank(lovefaction) > 0
+	if ispositive
 
-	thisactor.modfactionrank(lovefaction, -1)
+		if thisactor.getfactionrank(lovefaction) < 9
+			float skillinc = playerref.getav("Speechcraft")
+			skillinc = skillinc * 10
+			Game.AdvanceSkill("Speechcraft", skillinc)
+			thisactor.modfactionrank(lovefaction, 1)
 
-	debug.notification("Your affinity has decreased!")
-	CDSpell.cast(thisactor)
+			debug.notification("Your affinity has increased!")
 
-endif
+		endif
+
+	elseif thisactor.getfactionrank(lovefaction) > 0
+
+		thisactor.modfactionrank(lovefaction, -1)
+
+		debug.notification("Your affinity has decreased!")
+		CDSpell.cast(thisactor)
+
+	endif
 
 endfunction
 
@@ -146,9 +147,9 @@ endfunction
 
 Int Function CheckFactionindex(actor thisactor, Formlist tocheck)
 
-int index = 0
+	int index = 0
 
-while index < tocheck.getsize()
+	while index < tocheck.getsize()
 
 	Faction currFac = tocheck.getat(index) as faction
 
@@ -160,9 +161,9 @@ while index < tocheck.getsize()
 
 
 
-endwhile
+	endwhile
 
-return -1
+	return -1
 
 
 Endfunction
@@ -185,7 +186,7 @@ Diginified
 
 If PIndex == 0
 
-	If game.getplayer().hasspell(GallantAB)
+	If playerref.hasspell(GallantAB)
 	toreturn = toreturn + 20
 	Endif
 
@@ -201,7 +202,7 @@ Irritable
 
 If PIndex == 1
 
-	If game.getplayer().hasspell(LotharioAB)
+	If playerref.hasspell(LotharioAB)
 	toreturn = toreturn + 20
 	Endif
 
@@ -216,7 +217,7 @@ Outgoing
 
 If PIndex == 2
 
-	If game.getplayer().hasspell(GallantAB)
+	If playerref.hasspell(GallantAB)
 	toreturn = toreturn + 20
 	Endif
 
@@ -231,7 +232,7 @@ Seductive
 
 If PIndex == 3
 
-	If game.getplayer().hasspell(LotharioAB) || game.getplayer().hasspell(MeekAB)
+	If playerref.hasspell(LotharioAB) || playerref.hasspell(MeekAB)
 	toreturn = toreturn + 20
 	Endif
 
@@ -246,7 +247,7 @@ Shy
 
 If PIndex == 4
 
-	If game.getplayer().hasspell(LotharioAB) || game.getplayer().hasspell(GallantAB)
+	If playerref.hasspell(LotharioAB) || playerref.hasspell(GallantAB)
 	toreturn = toreturn + 20
 	Endif
 
@@ -260,7 +261,7 @@ Tomboyish
 
 If PIndex == 5
 
-	If game.getplayer().hasspell(MeekAB) || game.getplayer().hasspell(GallantAB)
+	If playerref.hasspell(MeekAB) || playerref.hasspell(GallantAB)
 	toreturn = toreturn + 20
 	Endif
 
@@ -274,7 +275,7 @@ Maternal
 
 If PIndex == 6
 
-	If game.getplayer().hasspell(MeekAB)
+	If playerref.hasspell(MeekAB)
 	toreturn = toreturn + 20
 	Endif
 
@@ -313,7 +314,7 @@ Alchemy
 
 
 If IIndex == 0
-	float ALCH = game.getplayer().getactorvalue("Alchemy")
+	float ALCH = playerref.getactorvalue("Alchemy")
 	ALCH = ALCH/5
 	int AlchInt = AlCH as Int
 
@@ -328,7 +329,7 @@ Commerce
 
 
 If IIndex == 1
-	int goldcount = game.getplayer().getitemcount(Gold)
+	int goldcount = playerref.getitemcount(Gold)
 
 	if goldcount >= 5000
 	goldcount = 5000
@@ -349,7 +350,7 @@ Fashion
 
 If IIndex == 2
 
-if game.getplayer().wornhaskeyword(JewelKYWD)
+if playerref.wornhaskeyword(JewelKYWD)
 
 toreturn = toreturn + 20
 
@@ -366,7 +367,7 @@ Gourmet
 
 If IIndex == 3
 
-	int goldcount = game.getplayer().getitemcount(garlic)
+	int goldcount = playerref.getitemcount(garlic)
 
 	if goldcount >= 40
 	goldcount = 40
@@ -406,7 +407,7 @@ Hunting
 
 If IIndex == 5
 
-	float ALCH = game.getplayer().getactorvalue("Marksman")
+	float ALCH = playerref.getactorvalue("Marksman")
 	ALCH = ALCH/5
 	int AlchInt = AlCH as Int
 
@@ -423,12 +424,12 @@ Magic
 
 If IIndex == 6
 
-	float DES = game.getplayer().getactorvalue("Destruction")
-	float CON = game.getplayer().getactorvalue("Conjuration")
-	float ALT = game.getplayer().getactorvalue("Alteration")
-	float RES = game.getplayer().getactorvalue("Restoration")
-	float ILL = game.getplayer().getactorvalue("Illusion")
-	float ENCH = game.getplayer().getactorvalue("Enchanting")
+	float DES = playerref.getactorvalue("Destruction")
+	float CON = playerref.getactorvalue("Conjuration")
+	float ALT = playerref.getactorvalue("Alteration")
+	float RES = playerref.getactorvalue("Restoration")
+	float ILL = playerref.getactorvalue("Illusion")
+	float ENCH = playerref.getactorvalue("Enchanting")
 	
 	if CON < DES
 	DES = Con
@@ -490,10 +491,10 @@ Magic
 
 If IIndex == 7
 
-	float DES = game.getplayer().getactorvalue("Onehanded")
-	float CON = game.getplayer().getactorvalue("Twohanded")
-	float ALT = game.getplayer().getactorvalue("Heavyarmor")
-	float RES = game.getplayer().getactorvalue("Lightarmor")
+	float DES = playerref.getactorvalue("Onehanded")
+	float CON = playerref.getactorvalue("Twohanded")
+	float ALT = playerref.getactorvalue("Heavyarmor")
+	float RES = playerref.getactorvalue("Lightarmor")
 	
 	if CON < DES
 	DES = Con
