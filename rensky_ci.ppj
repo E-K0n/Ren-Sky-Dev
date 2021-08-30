@@ -28,7 +28,7 @@
     </Folders>
     <ZipFiles Output="@Dist">
         <ZipFile Name="@ModName - @Ver" RootDir="@MyProject" Compression="deflate">
-            <Match>*.esp||*.psc||*.pex||*.lip||*.wav</Match>
+            <Match>*.esp||*.psc||*.pex||*.lip||*.wav||*.seq</Match>
         </ZipFile>
     </ZipFiles>
 </PapyrusProject>
